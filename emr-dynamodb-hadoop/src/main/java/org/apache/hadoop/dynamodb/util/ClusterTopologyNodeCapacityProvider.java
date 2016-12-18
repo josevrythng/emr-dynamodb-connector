@@ -13,13 +13,12 @@
 
 package org.apache.hadoop.dynamodb.util;
 
-import com.amazonaws.util.json.JSONArray;
-import com.amazonaws.util.json.JSONException;
-import com.amazonaws.util.json.JSONObject;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.mapred.JobConf;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -106,7 +105,7 @@ public class ClusterTopologyNodeCapacityProvider implements NodeCapacityProvider
   }
 
   private String extractInstanceType(String jobFlowJsonString, String targetInstanceRole) throws
-      JSONException {
+          JSONException {
     JSONObject jobFlowJson = new JSONObject(jobFlowJsonString);
     JSONArray instanceGroups = jobFlowJson.getJSONArray("instanceGroups");
 

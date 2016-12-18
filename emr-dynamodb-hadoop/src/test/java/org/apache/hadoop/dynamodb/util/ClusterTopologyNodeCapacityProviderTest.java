@@ -13,8 +13,6 @@
 
 package org.apache.hadoop.dynamodb.util;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.hadoop.mapred.JobConf;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,9 +21,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 
+import static org.junit.Assert.assertEquals;
+
 @RunWith(MockitoJUnitRunner.class)
 public class ClusterTopologyNodeCapacityProviderTest {
-  private static final int NODE_MANAGER_MEMORY = 123;
+  private static final int NODE_MANAGER_MEMORY = 456;
   private static final int SCHEDULER_MAX_ALLOCATION_MEMORY = 456;
 
   private final JobConf conf = new JobConf();
