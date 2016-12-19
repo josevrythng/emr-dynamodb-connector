@@ -13,16 +13,16 @@
 
 package org.apache.hadoop.dynamodb.util;
 
+import com.amazonaws.util.json.Jackson;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.mapred.JobConf;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Iterator;
 
 public class ClusterTopologyNodeCapacityProvider implements NodeCapacityProvider {
   private static final Log log = LogFactory.getLog(ClusterTopologyNodeCapacityProvider.class);
@@ -105,19 +105,22 @@ public class ClusterTopologyNodeCapacityProvider implements NodeCapacityProvider
   }
 
   private String extractInstanceType(String jobFlowJsonString, String targetInstanceRole) throws
-          JSONException {
-    JSONObject jobFlowJson = new JSONObject(jobFlowJsonString);
-    JSONArray instanceGroups = jobFlowJson.getJSONArray("instanceGroups");
+          Exception {
 
-    for (int i = 0; i < instanceGroups.length(); i++) {
-      JSONObject instanceGroup = instanceGroups.getJSONObject(i);
-      String instanceRole = instanceGroup.getString("instanceRole");
-      if (targetInstanceRole.equalsIgnoreCase(instanceRole)) {
-        String instanceType = instanceGroup.getString("instanceType");
-        log.info(instanceRole + " instance type: " + instanceType);
-        return instanceType;
+      JsonNode jobFlowJson = Jackson.jsonNodeOf(jobFlowJsonString);
+    //JSONObject jobFlowJson = new JSONObject(jobFlowJsonString);
+    //JSONArray instanceGroups = jobFlowJson.getJSONArray("instanceGroups");
+      Iterator<JsonNode> instanceGroups = jobFlowJson.get("instanceGroups").iterator();
+
+      while (instanceGroups.hasNext()) {
+          JsonNode instanceGroup = instanceGroups.next();
+          String instanceRole = instanceGroup.asText("instanceRole");
+          if (targetInstanceRole.equalsIgnoreCase(instanceRole)) {
+              String instanceType = instanceGroup.asText("instanceType");
+              log.info(instanceRole + " instance type: " + instanceType);
+              return instanceType;
+          }
       }
-    }
-    return null;
+      return null;
   }
 }
